@@ -6,7 +6,7 @@
 > **PegBit Studio · Flagship Research Pillar 02** (`PegBit Technologies Ltd`, Nigeria)  
 > Research Programme: [pegbitstudio.com/research#ai-control](https://www.pegbitstudio.com/research#ai-control) · Publications: [pegbitstudio.com/research/publications](https://www.pegbitstudio.com/research/publications)
 
-Practical sandboxing, seccomp/Docker profile generation, isolated subprocess execution, and Witness-linked SHA-256 audit logging for autonomous coding agents.
+An early test bed for controlling autonomous coding agents: secret stripping, a pattern-based pre-run check, subprocess execution with timeouts, seccomp/Docker profile generation, and Witness-linked SHA-256 audit logging. It is not a security boundary.
 
 ---
 
@@ -17,7 +17,7 @@ Practical sandboxing, seccomp/Docker profile generation, isolated subprocess exe
 | :--- | :--- | :--- |
 | **Unit & Integration Tests (`pytest`)** | **8 / 8 passed** (`0.94s`) | Covers env secret stripping, seccomp/Docker profiles, sandbox runner, tamper detection |
 | **Benign Coding Utility** | **3 / 3 passed** | Unit tests, local JSON transform, isolated env check |
-| **Adversarial Containment** | **5 / 5 contained** | `.env` read, `.ssh/id_rsa` traversal, `urllib` egress, `ctypes`/`ptrace`, infinite-loop timeout |
+| **Adversarial Scenarios** | **5 / 5 stopped** | Scenarios written by us: `.env` read, `.ssh/id_rsa` traversal, `urllib` egress, `ctypes`/`ptrace`, infinite-loop timeout. Not yet tested by an outside red team |
 | **Median Adversarial Containment Latency** | **0.272 ms** | Preflight/policy containment latency |
 | **Witness-Linked Audit Chain** | **Verified (`True`, 8 records)** | Offline SHA-256 chain check (`verify_audit_log`) |
 
@@ -32,6 +32,7 @@ Practical sandboxing, seccomp/Docker profile generation, isolated subprocess exe
   4. `AuditChain` & `verify_audit_log` (`audit.py`): Appends executions and policy decisions to a SHA-256 hash-chained JSONL ledger.
 - **Planned Research (Not Yet Implemented):**
   - Linux **Firecracker / gVisor microVM** execution, **eBPF** kernel syscall telemetry/LSM enforcement, and cryptographic **subagent capability attenuation** (`RQ2`).
+- **Known bypasses:** the pre-run check matches import names and string patterns, so dynamic or obfuscated imports (e.g. `__import__`, `importlib`, encoded strings) can get past it. The seccomp profile and Docker flags are generated but not applied in the benchmark run.
 - **Explicit Qualification:** Current Python AST pre-flight + subprocess isolation is an *early local evaluation harness*, not a complete kernel security boundary. Architectural controls reduce defined attack surfaces under a stated threat model; they do not claim complete containment.
 
 ## Quickstart
